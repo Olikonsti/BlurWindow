@@ -11,3 +11,8 @@
 - Window sometimes not resizable
 - Ghost titlebar after window maximize
 - Support for only one main Monitor
+
+# How it works
+- BlurWindow will create a second window without a title bar behind the root window.
+- A blurred image of the Screen gets placed on the back window
+- You just specify a color, which will become transparent in the root window thus showing the blurred background 
