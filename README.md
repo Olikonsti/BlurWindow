@@ -5,5 +5,4 @@
 
 ![image](https://user-images.githubusercontent.com/68354546/150176566-3726c5d7-9966-4c5d-938e-16686c706001.png)
 
-![image](https://user-images.githubusercontent.com/68354546/150220930-5b2314dd-b2b5-4fc2-afd3-4794462eb42f.png)
-
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/68354546/150221094-f6ae5702-6ad8-4c6e-b186-bdafda19fb6e.gif)
