@@ -1,18 +1,17 @@
 from tkinter import *
 import pyautogui
 from PIL import ImageTk, ImageFilter, ImageEnhance
-from PIL import ImageGrab
-from functools import partial
-#ImageGrab.grab = partial(ImageGrab.grab, all_screens=True)
 
 class BlurWindow(Toplevel):
-    def __init__(self, window, color):
+    def __init__(self, window, color, radius=90, brightness=0.5):
         super().__init__(window)
         self.overrideredirect(True)
         self.window = window
         self.enabled = True
         self.freeze = False
+        self.block_lifting = False
         self.transparent_color = color
+
         def handle_focus(event=None):
             window.focus_set()
         self.bind("<FocusIn>", handle_focus)
@@ -25,9 +24,9 @@ class BlurWindow(Toplevel):
             if hide:
                 self.deiconify()
                 self.window.deiconify()
-            blurImage = ss.filter(ImageFilter.GaussianBlur(radius=80))
+            blurImage = ss.filter(ImageFilter.GaussianBlur(radius=radius))
             filter = ImageEnhance.Brightness(blurImage)
-            brightImage = filter.enhance(0.75)
+            brightImage = filter.enhance(brightness)
             brightImage = brightImage.filter(ImageFilter.SMOOTH_MORE())
             return brightImage
 
@@ -74,13 +73,25 @@ class BlurWindow(Toplevel):
         def lift_bg(event=None):
             self.deiconify()
             self.window.deiconify()
-        self.window.bind("<FocusIn>", lift_bg)
+        self.window.bind("<FocusIn>", self.focus_event)
         self.window.bind("<Configure>", self.update_task)
         self.update_task()
         self.window.wm_attributes("-transparentcolor", self.transparent_color)
         self.change_geometry_width(1)
         self.change_geometry_width(-1)
-        self.after(10, lift_bg)
+        self.after(2, lift_bg)
+
+    def focus_event(self, event=None):
+        print(event.widget)
+        if not self.block_lifting:
+            if str(event.widget) == ".":    # check if focus on main window and not on widget
+                self.lift_bg()
+
+    def block_lift(self):
+        self.block_lifting = True
+
+    def unblock_lift(self):
+        self.block_lifting = False
 
     def disable(self):
         self.enabled = False
@@ -98,7 +109,11 @@ class BlurWindow(Toplevel):
 
 
     def update_image(self, event=None):
-        self.ss = self.upd()
+        self.ss = self.upd(hide=True)
+        self.picture = ImageTk.PhotoImage(self.ss)
+        self.change_geometry_width(1)
+        self.change_geometry_width(-1)
+        self.after(2, self.lift_bg)
 
     def kill(self):
         self.window.bind("<Configure>", lambda e:print)
@@ -121,6 +136,7 @@ class BlurWindow(Toplevel):
                 #self.image1 = image1
 
                 self.geometry(f"{self.window.winfo_width()-1}x{self.window.winfo_height()}+{self.window.winfo_x() + 8}+{self.window.winfo_y() + 30}")
+                #self.geometry("10x10")
 
 
                 self.last_width = self.width
@@ -128,7 +144,7 @@ class BlurWindow(Toplevel):
                 self.last_x = self.x
                 self.last_y = self.y
 
-                self.after(80, self.unfreeze)
+                self.after(6, self.unfreeze)
 
             #self.after(10, self.update_task)
 
