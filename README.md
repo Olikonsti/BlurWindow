@@ -1,3 +1,5 @@
+I WONT WORK ON THIS ANY LONGER (IT WORKS BUT NOT GREAT)
+
 # BlurWindow
  Python class for creating tkinter windows with blurred background
  
